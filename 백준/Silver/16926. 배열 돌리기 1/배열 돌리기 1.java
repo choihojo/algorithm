@@ -70,13 +70,17 @@ public class Main {
 			rowMin = 0;
 			rowMax = N - 1;
 		}
-
-		for (int[] a : input) {
-			for (int b : a) {
-				System.out.print(b + " ");
-			}
-			System.out.println();
-		}
+		
+		StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < N; i++) {
+	    	for (int j = 0; j < M; j++) {
+	    		if (j == M - 1) sb.append(result[i][j]);
+	    		else sb.append(result[i][j]).append(" ");
+	    	}
+	    	if (i != N - 1) sb.append("\n");
+	    }
+	    
+	    System.out.println(sb.toString());
 		
 	}
 }
