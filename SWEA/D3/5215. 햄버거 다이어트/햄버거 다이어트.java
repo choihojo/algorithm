@@ -9,7 +9,6 @@ public class Solution {
 	static int L = 0;
 	static int tempFlavour = 0;
 	static int tempCalorie = 0;
-	static int test = 0;
 	
 	public static void combination(int goal, int cnt, int start) {
 		// 재료를 goal개 고르는 함수
@@ -20,10 +19,6 @@ public class Solution {
 					max = tempFlavour;
 				}
 			}
-//			test++;
-//			System.out.println("Flavour : " + tempFlavour);
-//			System.out.println("Calorie : " + tempCalorie);
-//			System.out.println("------------------------");
 			return;
 		}
 		
@@ -60,15 +55,12 @@ public class Solution {
 				calorie[n] = Integer.parseInt(srr[1]);
 			}
 			
-			// 20개 재료 중에서 1개 고르는 경우, 2개 고르는 경우, ..., N 개 고르는 경우 고려
+			// 20개 재료 중에서 0개 고르는 경우, 1개 고르는 경우, ..., N 개 고르는 경우 고려
 			for (int i = 0; i <= N; i++) {
 				combination(i, 0, 0);
 			}
-//			combination(2, 0, 0);
-			
-			
+
 			System.out.printf("#%d %d\n", t, max);
-//			System.out.println(test);
 			max = 0;
 		}
 	}
