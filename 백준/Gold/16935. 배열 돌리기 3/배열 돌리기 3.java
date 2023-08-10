@@ -1,24 +1,37 @@
 import java.io.*;
 
 public class Main {
+//	입력으로 받을 N, M, R 변수 선언
 	static int N;
 	static int M;
 	static int R;
+	
+//	입력 배열과 출력 배열
 	static int[][] irr;
 	static int[][] orr;
+	
+//	연산 순서 저장할 배열
 	static int[] seq;
 	
+//	5번과 6번 연산에 대비해 미리 인덱싱
+//	행은 rowMin~rowMid1, rowMid2~rowMax로 이등분
+//	관련 식은 reset() 참고
 	static int rowMin;
 	static int rowMid1;
 	static int rowMid2;
 	static int rowMax;
 	
+//	열은 colMin~colMid1, colMid2~colMax로 이등분
 	static int colMin;
 	static int colMid1;
 	static int colMid2;
 	static int colMax;
 	
-	
+//	상하 반전 연산
+//	인덱스 변화를 관찰하면 쉽게 짤 수 있음
+//	주의할 점은 reset() 부분
+//	출력 배열의 크기가 입력 배열과 동일한 연산의 경우에는 별 상관이 없음
+//	하지만 크기가 다른 경우 reset()을 통해 N, M을 입력 배열의 행과 열로 초기화하는 과정이 필요함
 	public static void array1() {
 		reset();
 		orr = new int[N][M];
@@ -27,6 +40,8 @@ public class Main {
 				orr[rowMax - row][col] = irr[row][col];
 			}
 		}
+//		출력 배열을 입력 배열에 복사하여 다음 연산을 가능하게 함
+//		예를 들어 1번째 연산의 출력 배열이 2번째 연산에서는 입력이 되기 때문임
 		irr = new int[N][M];
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
@@ -35,6 +50,7 @@ public class Main {
 		}
 	}
 	
+//	좌우 반전 연산
 	public static void array2() {
 		reset();
 		orr = new int[N][M];
@@ -51,6 +67,7 @@ public class Main {
 		}
 	}
 	
+//	오른쪽 90도 회전 연산
 	public static void array3() {
 		reset();
 		orr = new int[M][N];
@@ -67,6 +84,7 @@ public class Main {
 		}
 	}
 	
+//	왼쪽 90도 회전 연산
 	public static void array4() {
 		reset();
 		orr = new int[M][N];
@@ -83,6 +101,7 @@ public class Main {
 		}
 	}
 	
+//	부분 배열로 나누고 시계 방향으로 돌리는 연산
 	public static void array5() {
 		reset();
 		orr = new int[N][M];
@@ -114,6 +133,7 @@ public class Main {
 		}
 	}
 	
+//	부분 배열로 나누고 반시계 방향으로 돌리는 연산
 	public static void array6() {
 		reset();
 		orr = new int[N][M];
@@ -180,6 +200,7 @@ public class Main {
 			seq[i] = Integer.parseInt(srr[i]);
 		}
 		
+//		연산 순서에 맞게 각 연산을 호출함
 		for (int i : seq) {
 			if (i == 1) array1();
 			else if (i == 2) array2();
@@ -189,6 +210,9 @@ public class Main {
 			else if (i == 6) array6();
 		}
 		
+//		각 줄 마지막에는 띄어쓰기 안 하도록 했음
+//		개행문자의 경우에도 입력 마지막에는 안 되게 함
+//		이렇게 하든 하지 않든 똑같이 정답인 듯?
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < orr.length; i++) {
 			for (int j = 0; j < orr[0].length; j++) {
