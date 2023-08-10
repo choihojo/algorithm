@@ -28,8 +28,8 @@ public class Solution {
 			else {
 				if (tempFlavour > max) {
 					max = tempFlavour;
+					return;
 				}
-				return;
 			}
 		}
 		
@@ -52,6 +52,8 @@ public class Solution {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int T = Integer.parseInt(br.readLine());
 		String[] srr = new String[2];
+		StringBuilder sb = new StringBuilder();
+		
 		for (int t = 1; t <= T; t++) {
 			srr = br.readLine().split(" ");
 			N = Integer.parseInt(srr[0]);
@@ -70,10 +72,14 @@ public class Solution {
 			for (int i = 0; i <= N; i++) {
 				combination(i, 0, 0);
 			}
-
-			System.out.printf("#%d %d\n", t, max);
+			
+			sb.append("#").append(t).append(" ").append(max);
+			if (t != T) {
+				sb.append("\n");
+			}
 			max = 0;
 		}
+		
+		System.out.println(sb.toString());
 	}
-
 }
