@@ -8,10 +8,8 @@ public class Solution {
 	static int tempFlavour = 0;
 	static int tempCalorie = 0;
 	
-	public static void combination(int goal, int cnt, int start) {
-		// 재료를 goal개 고르는 함수
-		if (cnt == goal) {
-			// goal개 골랐을 때 tempCalorie가 L보다 작고 tempFlavour가 max보다 크면 갱신
+	public static void subset(int cnt) {
+		if (cnt == N) {
 			if (tempCalorie <= L) {
 				if (tempFlavour > max) {
 					max = tempFlavour;
@@ -20,36 +18,33 @@ public class Solution {
 			return;
 		}
 		
-//		이러면 속도가 tempCalorie가 L을 넘을 경우에 바로 종료하므로 속도가 빨라질 줄 알았음
-//		근데 더 느려지는 거 보니 조건문 비교에 걸리는 시간이 더 긴 듯
-//		if (tempCalorie >= L) {
-//			if (tempCalorie > L) {
-//				return;
-//			}
-//			else {
-//				if (tempFlavour > max) {
-//					max = tempFlavour;
-//				}
-//        		return;
-//			}
-//		}
-		
-		// cnt번째 재료를 고르는 코드
-		for (int i = start; i < N; i++) {
-			
-			// 재료를 고르는 경우
-			tempFlavour += flavour[i];
-			tempCalorie += calorie[i];
-			combination(goal, cnt + 1, i + 1);
-			
-			// 재료를 고르지 않은 경우
-			tempFlavour -= flavour[i];
-			tempCalorie -= calorie[i];
-//			주의할 점은 아래에 combination(goal, cnt, i + 1);을 해줄 필요가 없음
-//			어차피 다음 i 루프로 넘어가면 자동으로 고르지 않은 경우로 계산되는 거임
+//		조합과 달리 부분집합에서는 아래 코드를 넣으니까 훨씬 빨라짐
+//		tempCalorie가 L보다 클 경우에는 더 볼 필요가 없으므로 탐색 종료
+		if (tempCalorie >= L) {
+		if (tempCalorie > L) {
+			return;
+		}
+		else {
+			if (tempFlavour > max) {
+				max = tempFlavour;
+			}
+			return;
 		}
 	}
-	
+		
+//			부분집합에서는 for문 쓸필요가 없음
+//			재료 체크 (1: 선택한 경우)
+			tempFlavour += flavour[cnt];
+			tempCalorie += calorie[cnt];
+			subset(cnt + 1);
+			
+//			재료 체크 (0: 선택하지 않은 경우)
+			tempFlavour -= flavour[cnt];
+			tempCalorie -= calorie[cnt];
+			subset(cnt + 1);
+		
+	}
+
 	
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -71,10 +66,8 @@ public class Solution {
 				calorie[n] = Integer.parseInt(srr[1]);
 			}
 			
-			// 20개 재료 중에서 0개 고르는 경우, 1개 고르는 경우, ..., N 개 고르는 경우 고려
-			for (int i = 0; i <= N; i++) {
-				combination(i, 0, 0);
-			}
+			// 부분집합으로 한번에 구함
+			subset(0);
 			
 			sb.append("#").append(t).append(" ").append(max);
 			if (t != T) {
