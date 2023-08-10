@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
+import java.io.*;
 public class Solution {
 	static int max = 0;
 	static int[] flavour;
@@ -21,17 +19,20 @@ public class Solution {
 			}
 			return;
 		}
-		if (tempCalorie >= L) {
-			if (tempCalorie > L) {
-				return;
-			}
-			else {
-				if (tempFlavour > max) {
-					max = tempFlavour;
-					return;
-				}
-			}
-		}
+		
+//		이러면 속도가 tempCalorie가 L을 넘을 경우에 바로 종료하므로 속도가 빨라질 줄 알았음
+//		근데 더 느려지는 거 보니 조건문 비교에 걸리는 시간이 더 긴 듯
+//		if (tempCalorie >= L) {
+//			if (tempCalorie > L) {
+//				return;
+//			}
+//			else {
+//				if (tempFlavour > max) {
+//					max = tempFlavour;
+//					return;
+//				}
+//			}
+//		}
 		
 		// cnt번째 재료를 고르는 코드
 		for (int i = start; i < N; i++) {
@@ -44,6 +45,8 @@ public class Solution {
 			// 재료를 고르지 않은 경우
 			tempFlavour -= flavour[i];
 			tempCalorie -= calorie[i];
+//			주의할 점은 아래에 combination(goal, cnt, i + 1);을 해줄 필요가 없음
+//			어차피 다음 i 루프로 넘어가면 자동으로 고르지 않은 경우로 계산되는 거임
 		}
 	}
 	
