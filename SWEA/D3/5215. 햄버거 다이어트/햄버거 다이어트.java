@@ -21,6 +21,17 @@ public class Solution {
 			}
 			return;
 		}
+		if (tempCalorie >= L) {
+			if (tempCalorie > L) {
+				return;
+			}
+			else {
+				if (tempFlavour > max) {
+					max = tempFlavour;
+				}
+				return;
+			}
+		}
 		
 		// cnt번째 재료를 고르는 코드
 		for (int i = start; i < N; i++) {
