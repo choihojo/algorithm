@@ -18,19 +18,19 @@ public class Solution {
 			return;
 		}
 		
-//		조합과 달리 부분집합에서는 아래 코드를 넣으니까 훨씬 빨라짐
 //		tempCalorie가 L보다 클 경우에는 더 볼 필요가 없으므로 탐색 종료
-		if (tempCalorie >= L) {
-		if (tempCalorie > L) {
-			return;
-		}
-		else {
-			if (tempFlavour > max) {
-				max = tempFlavour;
-			}
-			return;
-		}
-	}
+//		속도 큰차이 없는 듯
+//		if (tempCalorie >= L) {
+//		if (tempCalorie > L) {
+//			return;
+//		}
+//		else {
+//			if (tempFlavour > max) {
+//				max = tempFlavour;
+//			}
+//			return;
+//		}
+//	}
 		
 //			부분집합에서는 for문 쓸필요가 없음
 //			재료 체크 (1: 선택한 경우)
