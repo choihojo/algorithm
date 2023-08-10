@@ -6,7 +6,7 @@ public class Main {
 	static int K;
 	
 //	배열에서 최솟값을 체크할 때 임시로 쓸 변수 temp 선언
-//	최종 최솟값으로 쓸 변수 min 선언 (temp보다 min이 작을 때마다 갱신)
+//	최종 최솟값으로 쓸 변수 min 선언 (temp가 min보다 작을 때마다 갱신)
 	static int temp = 0;
 	static int min = Integer.MAX_VALUE;
 	
