@@ -7,31 +7,26 @@ public class Main {
 			return false;
 		}
 		
+//		소수 판별에 쓸 배열 선언
+//		2의 배수는 모두 판별했다고 체크, 3의 배수는 모두 판별했다고 체크, ... 이런 식
 		boolean[] checked = new boolean[n];
-		
-//		1과 자기자신은 제외해야 하므로 미리 false로 설정
-//		약수면 true로 체크할 예정
-		checked[0] = false;
-		checked[n - 1] = false;
-		
-//		false의 개수를 세는 cnt는 0으로 초기화;
-//		false가 cnt개라면 소수임
-//		만약 temp가 n의 약수가 아니라면 그대로 false로 남아있을 것임
-//		그러므로 0번째부터 (n - 1)번째까지 모두 false면 소수라고 판단할 수 있음
-		int cnt = 0;
 		
 //		에라토스테네스의 체 알고리즘에서 배수로 쓸 변수 선언
 		int temp = 0;
 		
-//		i는 인덱스고 temp는 실제 원소의 값을 의미함
-//		2에서 (n - 1)까지만 조사하면 됨
-		for (int i = 1; i < n; i++) {
-//			만약 checked[i]가 false라면 조건문에 진입
+//		범위가 중요한데 1과 자기자신을 의미하는 0번째 인덱스와 (n - 1)번째 인덱스는 순회하면 안 됨
+		for (int i = 1; i < (n - 1); i++) {
+//			만약 체크하지 않은 인덱스라면 조건문 진입
 			if (!checked[i]) {
+//				인덱스보다 1 큰 값이 거기에 저장된 값이므로 temp 값 설정
 				temp = (i + 1);
-//				만약 i번째 요소의 값인 temp가 n의 약수라면 조건문에 진입하고 체크
+				
+//				만약 도중에 약수가 한번이라도 발견되면 바로 false 반환
 				if (n % temp == 0) {
-//					temp의 배수의 인덱스들 모두 true로 체크
+					return false;
+				}
+				else {
+//					temp가 n보다 작은 동안 계속 루프 돌면서 temp의 배수는 약수 여부를 체크한 것이라 간주
 					while (temp < n) {
 						checked[temp - 1] = true;
 						temp += (i + 1);
@@ -40,13 +35,8 @@ public class Main {
 			}
 		}
 		
-		for (int i = 0; i < n; i++) {
-			if (!checked[i]) {
-				cnt++;
-			}
-		}
-		
-		return (cnt == n);
+//		만약 (n - 1)번째까지 순회를 돌았음에도 불구하고 위에서 false가 반환되지 않았다면 약수인 셈이므로 true 반환
+		return true;
 	}
 	
 
