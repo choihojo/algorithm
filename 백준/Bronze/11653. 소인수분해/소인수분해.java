@@ -7,8 +7,9 @@ public class Main {
 		boolean[] checked = new boolean[N];
 		int temp = 0;
 		StringBuilder sb = new StringBuilder();
-		int result = N;
-		if (result != 1) {
+		
+//		여기에 굳이 이전 코드처럼 result 말고 N으로 해도 되는 이유 생각해볼 것
+		if (N != 1) {
 			for (int i = 1; i < N; i++) {
 //				(N / 2)부터 (N - 1)까지는 어차피 약수가 아니라서 확인할 필요가 없음
 //				마지막 자기자신으로 나누는 경우만 고려하면 되므로 아래 조건문 추가
@@ -18,9 +19,9 @@ public class Main {
 				
 				if (!checked[i]) {
 					temp = i + 1;
-					while (result % temp == 0) {
+					while (N % temp == 0) {
 						sb.append(temp).append("\n");
-						result /= temp;
+						N /= temp;
 					}
 //					체크한 숫자의 배수 숫자들은 모두 체크했다고 간주함
 //					이 체크는 temp가 N의 약수든 아니든 관계 없음
@@ -31,11 +32,10 @@ public class Main {
 						temp += (i + 1);
 					}
 				}
-				if (result == 1) {
+				if (N == 1) {
 //					마지막 개행문자 제거
 					sb.deleteCharAt(sb.length() - 1);
 					System.out.println(sb.toString());
-					break;
 				}
 			}
 		}
