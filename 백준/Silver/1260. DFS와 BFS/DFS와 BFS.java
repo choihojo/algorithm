@@ -61,27 +61,27 @@ public class Main {
 		
 		queue.offer(e);
 		visited[e] = true;
-//		int poll;
-		sb.append(e).append(" ");
+		int poll;
+//		sb.append(e).append(" ");
 		
 		while (!queue.isEmpty()) {
 //			아래 방식대로 해도 됨 (대신 위에서 sb.append는 지워야 함)
-//			poll = queue.poll();
-//			sb.append(poll).append(" ");
-//			for (int i : graph.get(poll)) {
-//				if (!visited[i]) {
-//					queue.offer(i);
-//					visited[i] = true;
-//				}
-//			}
-			
-			for (int i : graph.get(queue.poll())) {
+			poll = queue.poll();
+			sb.append(poll).append(" ");
+			for (int i : graph.get(poll)) {
 				if (!visited[i]) {
 					queue.offer(i);
 					visited[i] = true;
-					sb.append(i).append(" ");
 				}
 			}
+			
+//			for (int i : graph.get(queue.poll())) {
+//				if (!visited[i]) {
+//					queue.offer(i);
+//					visited[i] = true;
+//					sb.append(i).append(" ");
+//				}
+//			}
 		}
 	}
 	
