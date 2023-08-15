@@ -59,19 +59,21 @@ public class Main {
 					row = pRow + dRow[i];
 					col = pCol + dCol[i];
 					if (row >= 0 && row < N && col >= 0 && col < M) {
-//						if (!bMap[row][col]) {
+//						bMap을 쓰면 이미 고려된 곳은 바로 넘어가서 속도 개선이 이뤄질 것으로 예상됨
+//						근데 bMap 안 써도 통과되긴 함
+						if (!bMap[row][col]) {
 //							여기까지 조건을 통과했으면 poll한 노드의 4방위 이동 후 노드를 방문했다는 것이므로 체크
 //							-1을 방문체크해놓으면 다음번에 애초에 들어올 필요도 없음
 //							0이어도 아래에서 1로 바꾸고 큐에 넣어주는 순간 역할을 다한 거임
 //							값이 1인 좌표는 애초에 이 조건문에 들어올 수 없음 (시작할 때의 1들은 이미 방문체크를 해놨었음)
 //							나중에 익어서 생기는 1은 아래 조건문을 통과한 0에서 바뀐 1들인데 그 전에 방문체크를 하는 코드가 있기 때문임
-//							bMap[row][col] = true;
+							bMap[row][col] = true;
 							if (map[row][col] == 0) {
 								map[row][col] = 1;
 								queue.offer(new int[] {row, col});
 								cnt++;
 								flag = true;
-//							}
+							}
 						}
 					}
 				}
