@@ -90,14 +90,14 @@ public class Main {
 		
 		int start = 1;
 		
-//		visited[start] = true;
-//		dfsByRecursion(start);
-//		System.out.println(cnt);
+		visited[start] = true;
+		dfsByRecursion(start);
+		System.out.println(cnt);
 		
 //		dfsByStack(start);
 //		System.out.println(cnt);
 		
-		bfsByQueue(start);
-		System.out.println(cnt);
+//		bfsByQueue(start);
+//		System.out.println(cnt);
 	}
 }
