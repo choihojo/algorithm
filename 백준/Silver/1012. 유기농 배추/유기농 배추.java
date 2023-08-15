@@ -21,6 +21,19 @@ public class Main {
 	static int[] dCol = new int[] {1, 0, -1, 0};
 	static int cnt;
 	
+	public static void dfsByRecursion(int[] start) {
+		map[start[0]][start[1]] = false;
+		for (int i = 0; i < 4; i++) {
+			int row = start[0] + dRow[i];
+			int col = start[1] + dCol[i];
+			if (row >= 0 && row < M && col >= 0 && col < N) {
+				if (map[row][col]) {
+					dfsByRecursion(new int[] {row, col});
+				}
+			}
+		}
+	}
+	
 	public static void bfsByQueue(int[] start) {
 		map[start[0]][start[1]] = false;
 		Queue<int[]> queue = new ArrayDeque<>();
@@ -76,7 +89,9 @@ public class Main {
 				for (int n = 0; n < N; n++) {
 					if (map[m][n]) {
 						cnt++;
-						bfsByQueue(new int[] {m, n});
+//						dfs로 되는지 확인
+						dfsByRecursion(new int[] {m, n});
+//						bfsByQueue(new int[] {m, n});
 					}
 				}
 			}
