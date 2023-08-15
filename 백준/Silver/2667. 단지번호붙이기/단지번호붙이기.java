@@ -141,31 +141,31 @@ public class Main {
 //			}
 //		}
 		
-//		for (int i = 0; i < N; i++) {
-//			for (int j = 0; j < N; j++) {
-//				if (!visited[i][j] && map[i][j] == 1) {
-//					cnt++;
-//					houseCnt = 1;
-//					visited[i][j] = true;
-////					dfsByStack으로 단지 탐색
-//					dfsByStack(new int[] {i, j});
-//					houseList[cnt - 1] = houseCnt;
-//				}
-//			}
-//		}
-		
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
 				if (!visited[i][j] && map[i][j] == 1) {
 					cnt++;
 					houseCnt = 1;
 					visited[i][j] = true;
-//					bfsByQueue로 단지 탐색
-					bfsByQueue(new int[] {i, j});
+//					dfsByStack으로 단지 탐색
+					dfsByStack(new int[] {i, j});
 					houseList[cnt - 1] = houseCnt;
 				}
 			}
 		}
+		
+//		for (int i = 0; i < N; i++) {
+//			for (int j = 0; j < N; j++) {
+//				if (!visited[i][j] && map[i][j] == 1) {
+//					cnt++;
+//					houseCnt = 1;
+//					visited[i][j] = true;
+////					bfsByQueue로 단지 탐색
+//					bfsByQueue(new int[] {i, j});
+//					houseList[cnt - 1] = houseCnt;
+//				}
+//			}
+//		}
 		
 //		집의 수를 cnt - 1까지만 오름차순으로 정렬 (그 이후까지 하는 건 무의미함)
 		Arrays.sort(houseList, 0, cnt);
