@@ -1,16 +1,18 @@
 import java.io.*;
 import java.util.*;
 
+// for문을 이용해서 풀었을 땐 시간 초과가 나서 통과하지 못했음
+// 시간복잡도를 짐작하고 미리 반복문을 써도 될지 아니면 다른 방법을 강구해야될지 알 수 있어야할 듯
 // 1인 모든 지점에서 동시에(같은 day) bfs로 1칸씩 가야함
-
 public class Main {
 	static String[] srr;
 	static BufferedReader br;
 	static int M;
 	static int N;
 	static int[][] map;
-//	방문체크 배열이 필요함
-//	왜 필요한지 이해하는 게 중요한데 이미 주위 상하좌우로 익게 한 토마토의 경우 살펴볼 필요가 없음
+//	방문체크 배열 (이미 주위 상하좌우로 익게 한 토마토의 경우 살펴볼 필요가 없음)
+//	근데 어차피 전체 토마토를 탐색하는 것이 아니라 1인 토마토를 기준으로 상하좌우로 0인 것만 넣고 빼고하는 거라 큰 차이는 없는 듯함
+//	실제로 bMap 관련 코드를 빼고 돌려도 통과함
 	static boolean[][] bMap;
 	static int cnt;
 	static int total;
@@ -20,6 +22,9 @@ public class Main {
 	static List<int[]> start;
 	
 	public static boolean bfsByQueue(List<int[]> start) {
+//		이렇게 배열을 큐에 넣는 방법보다 객체화해서 넣는 방법도 해볼 필요가 있음
+//		이 문제처럼 저장해야되는 타입이 한가지면 배열로 넣어도 무방하지만 여러 타입을 저장해야 한다면 객체화하는 게 편할 수 있음
+//		예를 들어 Data 클래스를 만들고 row 프로퍼티와 col 프로퍼티를 만들어서 쓰는 거임
 		Queue<int[]> queue = new ArrayDeque<>();
 		int[] poll;
 		int row;
@@ -33,7 +38,7 @@ public class Main {
 			int tempRow = start.get(i)[0];
 			int tempCol = start.get(i)[1];
 //			시작점들은 poll하고 4방위를 고려하는 게 확정이므로 미리 여기서 방문체크해줌
-//			이 문제에서는 방문체크 자체가 답에 영향을 주는 건 아니지만 시간을 유의미하게 개선해줄 것으로 보임
+//			이 문제에서는 방문체크 자체가 답에 영향을 주진 않음
 			bMap[tempRow][tempCol] = true;
 			queue.offer(new int[] {tempRow, tempCol});
 		}
@@ -45,9 +50,11 @@ public class Main {
 //			offer 없이 단순히 poll만 하는(익은 토마토 개수 변화X) 경우에도 day++가 이루어지기 때문임
 			flag = false;
 			
-//			큐의 사이즈를 재는 것이 곧 day를 계산하는 것이고 핵심임
+//			큐의 사이즈를 재는 것이 곧 day를 계산하는 것이고 이 문제의 핵심임
 //			지금 큐의 사이즈만큼 poll하고 그에 따른 4방위 요소들을 넣어줘야 함
 //			현재 큐에 (1일 1일 1일) 이렇게 들어있다고 할 때 (2일 2일 2일, ..., 2일) 이렇게 될 때까지 빼주는 것임
+//			근데 이렇게 사이즈를 이용하지 않고 기존 최단경로 알고리즘처럼 이전 칸수에서 1 더한 값을 다음 칸수에 저장해도 day 계산이 가능해보임
+//			Data 클래스와 최단경로 알고리즘으로 다시 풀어볼 예정
 			size = queue.size();
 			
 			for (int s = 0; s < size; s++) {
@@ -59,8 +66,6 @@ public class Main {
 					row = pRow + dRow[i];
 					col = pCol + dCol[i];
 					if (row >= 0 && row < N && col >= 0 && col < M) {
-//						bMap을 쓰면 이미 고려된 곳은 바로 넘어가서 속도 개선이 이뤄질 것으로 예상됨
-//						근데 bMap 안 써도 통과되긴 함
 						if (!bMap[row][col]) {
 //							여기까지 조건을 통과했으면 poll한 노드의 4방위 이동 후 노드를 방문했다는 것이므로 체크
 //							-1을 방문체크해놓으면 다음번에 애초에 들어올 필요도 없음
