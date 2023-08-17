@@ -1,7 +1,7 @@
 import java.io.*;
 
-// 우선 단순 순열로도 풀리는지 확인용
-// 가지치기의 당위성 생각해볼 것
+//우선 단순 순열로도 풀리는지 확인용
+//가지치기의 당위성 생각해볼 것
 public class Main {
 	static int N;
 	static int[][] egg;
@@ -45,6 +45,38 @@ public class Main {
 		}
 	}
 	
+//	백트래킹 이용한 재귀
+//	원상복구시키기 때문에 별도의 tempEgg 배열이 필요없음
+	static void recursion(int cnt) {
+		if (cnt == N) {
+			temp = 0;
+			for (int i = 0; i < N; i++) {
+				if (egg[i][0] <= 0) {
+					temp++;
+				}
+			}
+			if (temp > max) {
+				max = temp;
+			}
+			return;
+		}
+		
+		for (int i = 0; i < N; i++) {
+			if (i != cnt) {
+				if (egg[i][0] <= 0 || egg[cnt][0] <= 0) {
+					recursion(cnt + 1);
+				}
+				else {
+					egg[i][0] -= egg[cnt][1];
+					egg[cnt][0] -= egg[i][1];
+					recursion(cnt + 1);
+					egg[i][0] += egg[cnt][1];
+					egg[cnt][0] += egg[i][1];
+				}
+			}
+		}
+	}
+	
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String[] srr;
@@ -64,7 +96,8 @@ public class Main {
 		}
 //		인덱싱 순열을 저장할 출력배열
 		output = new int[N];
-		permutation(0);
+//		permutation(0);
+		recursion(0);
 		System.out.println(max);
 	}
 }
