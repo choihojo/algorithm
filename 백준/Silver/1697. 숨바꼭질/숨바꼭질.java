@@ -36,7 +36,7 @@ public class Main {
 			for (int i = 0; i < size; i++) {
 				poll = queue.poll();
 //				인덱스 초과 예외 방지하려면 등호 여부 조심할 것
-//				아니면 아예 크기 배열을 선언하면 해결됨
+//				아니면 아예 크게 배열을 선언하면 해결됨
 //				왼쪽으로 가는 경우
 				if (poll > 0 && poll <= 100_000) {
 					if (!visited[poll - 1]) {
