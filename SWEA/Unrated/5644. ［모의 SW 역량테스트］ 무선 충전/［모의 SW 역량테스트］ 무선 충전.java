@@ -62,12 +62,18 @@ public class Solution {
              
 //          A가 이동하면서 어떤 충전기 영역을 지나왔는지 기록하기 위한 리스트 배열 (그냥 리스트가 아니라 리스트의 배열임)
 //          당연히 크기는 t = 0, 1, 2, ..., M까지므로 M + 1이 됨
-            List<Integer>[] listA = new ArrayList[M + 1];
+            @SuppressWarnings("unchecked")
+			List<Integer>[] listA = new ArrayList[M + 1];
+//          실제로는 리스트 List<?>[] listA = new ArrayList<?>[M + 1]; 이렇게 쓰는 게 정석임
+//          그렇게 한 뒤 아래에서 리스트 원소를 뽑아올 때 개선된 for문에서 Object 타입으로 받고 add할 때는 (int)로 캐스팅해주면 됨
+//          근데 어느 쪽으로 사용하든 큰 영향은 없는 것으로 보임
+//          List에 제네릭을 선언 안 해주면 자동으로 Object 타입으로 들어오는 걸로 인식함
             for (int i = 0; i < M + 1; i++) {
                 listA[i] = new ArrayList<>();
             }
 //          B가 이동하면서 어떤 충전기 영역을 지나왔는지 기록하기 위한 리스트 배열
-            List<Integer>[] listB = new ArrayList[M + 1];
+            @SuppressWarnings("unchecked")
+			List<Integer>[] listB = new ArrayList[M + 1];
             for (int i = 0; i < M + 1; i++) {
                 listB[i] = new ArrayList<>();
             }
@@ -158,7 +164,7 @@ public class Solution {
             
 //          출력 형식 맞춤
             sb.append("#").append(t).append(" ").append(charge).append("\n");
-
+            
         }
 //      마지막 개행문자 삭제
         sb.deleteCharAt(sb.length() - 1);
