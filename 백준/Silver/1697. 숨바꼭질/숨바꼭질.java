@@ -168,6 +168,6 @@ public class Main {
 		String[] srr = br.readLine().split(" ");
 		N = Integer.parseInt(srr[0]);
 		K = Integer.parseInt(srr[1]);
-		System.out.println(bfs1());
+		System.out.println(bfs2());
 	}
 }
