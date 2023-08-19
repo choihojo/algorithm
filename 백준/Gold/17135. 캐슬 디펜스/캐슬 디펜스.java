@@ -68,17 +68,15 @@ public class Main {
 				A : for (int d = 1; d <= D; d++) {
 //					가능성 있는 적들에 대해 탐색함
 //					탐색하는 행의 범위는 t를 이용하여 시간에 따라 1씩 줄어들게 함
-//					탐색 위치는 밑에서부터 탐색해야 함
-//					밑에서부터 하는 게 중요한데 이렇게 하지 않으면 마름모 모양의 범위에 적이 여러 명이 있을 때 같은 거리의 왼쪽 적보다 같은 거리의 위쪽 적부터 잡음
-//					또한 가장 중요한 부분으로 궁수의 열을 기준으로 좌측 파트, 열 파트, 우측 파트 이렇게 나누어서 해야 함
-//					만약 나누지 않고 전체 한번에 탐색을 진행하면 같은 거리의 열에 있는 적보다 같은 거리의 우측에 있는 적을 공격해버림
+//					궁수의 열을 기준으로 좌측 파트, 열 파트, 우측 파트 이렇게 나누어서 해야 함
+//					탐색 위치는 좌측 파트, 열 파트는 밑에서부터 하고 우측 파트는 위에서부터 해야 함 (매우 중요함)
+//					이렇게 하지 않으면 마름모 모양의 범위에 적이 여러 명이 있을 때 같은 거리의 왼쪽 적보다 같은 거리의 위쪽이나 오른쪽 적부터 잡음
 					for (int n = N - 1 - t; n >= 0; n--) { // 열보다 좌측 파트에서 거리 d인 적 탐색
 						for (int m = 0; m < output[i][1]; m++) {
 //							여기서 d 이하가 아니라 정확히 d로 하는 게 불필요한 연산을 줄일 수 있을 듯 (디펜스를 생각해보면 어차피 d == 0인 경우는 존재하지 않음)
 //							d == 1인 적은 최대 1명이고 다음 턴에 d == 0이 될 적은 애초에 잡아버리기 때문임
 							if (tempMap[n][m] == 1 && ((Math.abs(output[i][0] - n) + Math.abs(output[i][1] - m)) == d)) {
 								visited[n][m] = true;
-//								System.out.println("궁수" + i + "가 잡음 : " + n + ", " + m);
 								break A;
 							}
 						}
@@ -86,15 +84,16 @@ public class Main {
 					for (int n = N - 1 - t; n >= 0; n--) { // 같은 열에서 거리 d인 적 탐색
 						if (tempMap[n][output[i][1]] == 1 && (Math.abs(output[i][0] - n) == d)) {
 							visited[n][output[i][1]] = true;
-//							System.out.println("궁수" + i + "가 잡음 : " + n + ", " + output[i][1]);
 							break A;
 						}
 					}
+//					정말 중요한 부분인데 우측 파트를 검사할 때는 위에서부터 해야 같은 거리의 왼쪽 적부터 잡을 수 있음
+//					위에서와 동일하게 밑에서부터 검사하면 같은 거리의 오른쪽 적을 잡아버림
+//					이거 하나 때문에 2시간 날려먹었는데 답이 제대로 안 나오면 무조건 내가 잘못 짠 것이니 차분하게 디버깅할 필요가 있음
 					for (int n = 0; n <= N - 1 - t; n++) { // 열보다 우측 파트에서 거리 d인 적 탐색
 						for (int m = output[i][1] + 1; m < M; m++) {
 							if (tempMap[n][m] == 1 && ((Math.abs(output[i][0] - n) + Math.abs(output[i][1] - m)) == d)) {
 								visited[n][m] = true;
-//								System.out.println("궁수" + i + "가 잡음 : " + n + ", " + m);
 								break A;
 							}
 						}
@@ -115,17 +114,7 @@ public class Main {
 			for (int i = 0; i < 3; i++) {
 //				적들은 0부터 N - 1까지 포진해있음
 				output[i][0]--;
-			}
-//			System.out.println("-----" + t + "끝");
-//			System.out.println("행의 위치");
-//			System.out.println(output[1][0]);
-//			System.out.println("열의 위치");
-//			for (int i = 0; i < 3; i++) {
-//				System.out.println(output[i][1]);
-//			}
-//			for (int[] i : tempMap) {
-//				System.out.println(Arrays.toString(i));
-//			}
+			}		
 		}
 
 		for (int n = 0; n < N; n++) {
@@ -139,8 +128,6 @@ public class Main {
 		if ((before - after) > max) {
 			max = (before - after);
 		}
-//		System.out.println("--------------------------------------------------------------------------------------");
-//		System.out.println(before - after);
 	}
 	
 	public static void main(String[] args) throws Exception {
