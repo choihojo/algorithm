@@ -7,47 +7,42 @@ import java.util.*;
 
 // 암호로 사용했을 법한 문자 종류 C가지
 // C가지를 조합하여 가능성 있는 암호를 모두 구하는 프로그램
-// 시간제한 2초라서 그냥 부분집합으로 모든 경우의 수에 대해 가능한지 체크하면 될 듯?
 
 public class Main {
 	static int L;
 	static int C;
-	static boolean[] selected;
+	static String[] output;
 	static String[] srr;
-	static StringBuilder sb = new StringBuilder();
 	static StringBuilder result = new StringBuilder();
 	
-	static void subSet(int cnt) {
-		if (cnt == C) {
-			sb.setLength(0);
-			for (int i = 0; i < C; i++) {
-				if (selected[i]) sb.append(srr[i]);
-			}
+//	C개의 알파벳 중에서 L개를 뽑는 조합
+	static void combination(int cnt, int start) {
+		if (cnt == L) {
+//			뽑았으면 암호가 성립하는지 체크하는 메서드 호출
 			check();
 			return;
 		}
 		
-		selected[cnt] = true;
-		subSet(cnt + 1);
-		selected[cnt] = false;
-		subSet(cnt + 1);
+		for (int i = start; i < C; i++) {
+			output[cnt] = srr[i];
+			combination(cnt + 1, i + 1);
+		}
 	}
 	
 	static void check() {
 //		모음 개수
 		int vowel = 0;
-		String sbStr = sb.toString();
-//		길이가 L인지 검사
-//		L 이상인 줄 알고 부분집합으로 했는데 L이었음 -> 조합인 듯..
-		if (sbStr.length() == L) {
-			if (sbStr.contains("a")) vowel++;
-			if (sbStr.contains("e")) vowel++;
-			if (sbStr.contains("i")) vowel++;
-			if (sbStr.contains("o")) vowel++;
-			if (sbStr.contains("u")) vowel++;
-//			모음이 1개 이상이고 자음이 2개 이상
-			if (vowel >= 1 && (L - vowel) >= 2) result.append(sbStr).append("\n");
+		String str = "";
+		for (int i = 0; i < L; i++) {
+			str += output[i];
 		}
+		if (str.contains("a")) vowel++;
+		if (str.contains("e")) vowel++;
+		if (str.contains("i")) vowel++;
+		if (str.contains("o")) vowel++;
+		if (str.contains("u")) vowel++;
+//		모음이 1개 이상이고 자음이 2개 이상이면 결과에 추가
+		if (vowel >= 1 && (L - vowel) >= 2) result.append(str).append("\n");
 	}
 	
 	
@@ -58,11 +53,13 @@ public class Main {
 		L = Integer.parseInt(srr[0]);
 		C = Integer.parseInt(srr[1]);
 		srr = br.readLine().split(" ");
+//		알파벳 오름차순으로 정렬
 		Arrays.sort(srr);
 		
-		selected = new boolean[C];
+		output = new String[L];
 		
-		subSet(0);
+		combination(0, 0);
+		
 		if (result.length() > 0) {
 			result.deleteCharAt(result.length() - 1);
 			System.out.println(result);
