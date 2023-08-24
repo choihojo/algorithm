@@ -48,20 +48,21 @@ public class Main {
 		pQueue.add(new Vertex(1, 0));
 		Vertex poll;
 		int pNo;
-		int pWeight;
+//		int pWeight;
 		
 		while (!pQueue.isEmpty()) {
 			poll = pQueue.poll();
 			pNo = poll.no;
-			pWeight = poll.weight;
+//			pWeight = poll.weight;
 			
-			if (visited[pNo]) continue;
+//			이거 안 해도 답은 나올텐데 그럼 시간초과 나는지 확인해보자
+//			if (visited[pNo]) continue;
 			
 			visited[pNo] = true;
-			sum += pWeight;
-			cnt++;
+//			sum += pWeight;
+//			cnt++;
 			
-			if (cnt == V) break;
+//			if (cnt == V) break;
 			
 			for (Vertex vertex : adjList.get(pNo)) {
 				if (!visited[vertex.no] && vertex.weight <= minEdge[vertex.no]) {
@@ -71,9 +72,9 @@ public class Main {
 			}
 		}
 		
-//		for (int i = 1; i <= V; i++) {
-//			sum += minEdge[i];
-//		}
+		for (int i = 1; i <= V; i++) {
+			sum += minEdge[i];
+		}
 		
 		System.out.println(sum);
 	}
