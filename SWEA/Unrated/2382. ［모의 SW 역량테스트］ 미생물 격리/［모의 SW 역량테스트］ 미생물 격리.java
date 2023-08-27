@@ -54,7 +54,9 @@ public class Solution {
 						if (map[i][j] == null) continue;
 						int row = i + dRow[map[i][j].type];
 						int col = j + dCol[map[i][j].type];
-						if (tempMap[row][col] == null) tempMap[row][col] = new Data(map[i][j].num, map[i][j].num, map[i][j].type);
+						if (tempMap[row][col] == null) {
+							tempMap[row][col] = map[i][j];
+						}
 						else {
 							if (tempMap[row][col].max > map[i][j].max) tempMap[row][col].num += map[i][j].num;
 							else {
