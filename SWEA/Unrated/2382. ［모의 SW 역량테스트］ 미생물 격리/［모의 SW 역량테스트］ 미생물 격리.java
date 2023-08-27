@@ -83,7 +83,10 @@ public class Solution {
 				for (int i = 0; i < N; i++) {
 					for (int j = 0; j < N; j++) {
 						if (tempMap[i][j] == null) continue;
-						map[i][j] = new Data(tempMap[i][j].num, tempMap[i][j].num, tempMap[i][j].type);
+//						map[i][j] = new Data(tempMap[i][j].num, tempMap[i][j].num, tempMap[i][j].type);
+//						위 한 줄의 코드와 아래 두 줄의 코드가 사실상 같은 의미라는 걸 이해할 것 (객체 참조, 딥카피, 소프트카피)
+						map[i][j] = tempMap[i][j];
+						map[i][j].max = map[i][j].num;
 						tempMap[i][j] = null;
 					}
 				}
