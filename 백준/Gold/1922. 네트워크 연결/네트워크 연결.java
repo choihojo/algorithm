@@ -2,60 +2,58 @@ import java.io.*;
 import java.util.*;
 
 // MST 연습하는 문제
-// 크루스칼 알고리즘 이용
+// 프림 알고리즘 이용
 
 public class Main {
 	static int N;
 	static int M;
-//	크루스칼 알고리즘은 간선 중심 알고리즘이므로 간선 리스트를 생성함
-	static List<Edge> list;
-//	크루스칼 알고리즘은 union-find를 이용함
-	static int[] parents;
+//	프림 알고리즘은 정점 중심 알고리즘이므로 정점 리스트들의 리스트로 저장함 (리스트의 인덱스는 시작 정점을 의미함)
+	static List<List<Vertex>> list;
+	static boolean[] visited;
+	
+	static int[] minEdge;
 	static int sum;
 	static int cnt;
 	
-	static void make() {
-//		인덱싱 편하게 하기 위해 1 크게 설정함
-		parents = new int[N + 1];
+	static void prim() {
+//		방문체크 및 간선 배열 초기화
+		visited = new boolean[N + 1];
+		minEdge = new int[N + 1];
 		for (int i = 1; i <= N; i++) {
-			parents[i] = i;
+			minEdge[i] = Integer.MAX_VALUE;
 		}
-	}
-	
-	static int find(int a) {
-		if (parents[a] == a) return a;
-//		int rootA = find(parents[a]);
-//		parents[a] = rootA;
-//		return rootA;
-//		아래 1줄은 위 3줄과 동일한 의미임
-		return parents[a] = find(parents[a]);
-	}
-	
-	static boolean union(int a, int b) {
-		int rootA = find(a);
-		int rootB = find(b);
-//		만약 rootA와 rootB가 이미 같았다면 false 반환함
-//		루트가 같은데 합치면 사이클이 발생해서 MST 생성이 안됨
-		if (rootA == rootB) return false;
-//		rootB는 지금 최상단이므로 자기자신이 부모인데 rootA 하위에 붙여줌
-		parents[rootB] = rootA;
-		return true;
-	}
-	
-	static void kruskal() {
-		make();
-		cnt = 0;
-		sum = 0;
-		for (int i = 0; i < list.size(); i++) {
-			int from = list.get(i).from;
-			int to = list.get(i).to;
-			int weight = list.get(i).weight;
-			if (union(from, to)) {
-				sum += weight;
-				cnt++;
+//		우선순위 큐 생성
+		PriorityQueue<Vertex> pQueue = new PriorityQueue<>((o1, o2) -> (o1.weight > o2.weight ? 1 : (o1.weight == o2.weight ? 0 : -1)));
+		pQueue.offer(new Vertex(1, 0));
+//		시작 정점의 간선 거리는 0으로 초기화
+//		프림에서 시작 정점은 어느 정점이든 상관없음
+		minEdge[1] = 0;
+		Vertex poll;
+		int pNo;
+		int pWeight;
+		while (!pQueue.isEmpty()) {
+			poll = pQueue.poll();
+			pNo = poll.no;
+			pWeight = poll.weight;
+			
+			if (visited[pNo]) {
+				continue;
 			}
-//			간선의 개수이므로 N이 아니라 (N - 1)일 때 탈출하는 것에 유의할 것
-			if (cnt == (N - 1)) break;
+			
+			visited[pNo] = true;
+			sum += pWeight;
+			cnt++;
+			
+			if (cnt == N) break;
+			
+			for (Vertex vertex : list.get(pNo)) {
+				int no = vertex.no;
+				int weight = vertex.weight;
+				if (!visited[no] && weight < minEdge[no]) {
+					minEdge[no] = weight;
+					pQueue.offer(vertex);
+				}
+			}
 		}
 	}
 	
@@ -64,29 +62,30 @@ public class Main {
 		N = Integer.parseInt(br.readLine());
 		M = Integer.parseInt(br.readLine());
 		list = new ArrayList<>();
-//		간선 입력받아서 저장함
+//		인덱싱 편하게 하기 위해 1 크게 설정함
+		for (int i = 0; i <= N; i++) {
+			list.add(new ArrayList<>());
+		}
 		for (int i = 0; i < M; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int from = Integer.parseInt(st.nextToken());
 			int to = Integer.parseInt(st.nextToken());
 			int weight = Integer.parseInt(st.nextToken());
-			list.add(new Edge(from, to, weight));
+//			유향인지 무향인지 잘 구별할 것
+			list.get(from).add(new Vertex(to, weight));
+			list.get(to).add(new Vertex(from, weight));
 		}
-//		간선 오름차순으로 정렬함
-		Collections.sort(list, (o1, o2) -> (o1.weight > o2.weight ? 1 : (o1.weight == o2.weight ? 0 : -1)));
-		kruskal();
+		prim();
 		System.out.println(sum);
 	}
 }
 
-class Edge {
-	int from;
-	int to;
+class Vertex {
+	int no;
 	int weight;
-	public Edge(int from, int to, int weight) {
+	public Vertex(int no, int weight) {
 		super();
-		this.from = from;
-		this.to = to;
+		this.no = no;
 		this.weight = weight;
 	}
 }
