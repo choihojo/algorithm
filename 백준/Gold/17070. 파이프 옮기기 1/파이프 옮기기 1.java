@@ -1,87 +1,64 @@
 import java.io.*;
-
-// 행과 열의 번호는 1부터 시작함
-// 파이프는 2개의 연속된 칸을 차지함
-// 끝점이 (1, 2)에서 (N, N)으로 이동하는 방법의 개수를 구해야함
-// 빈 칸은 0이고 벽은 1
-// N은 3 이상 16 이하
+import java.util.*;
 
 public class Main {
-	static int N;
-	static int[][] map;
-	static int[] dRow = new int[] {0, 1, 1};
-	static int[] dCol = new int[] {1, 0, 1};
-	static int cnt;
-	
-	static void dfs(int oRow, int oCol, int type) {
-		if (oRow == (N - 1) && oCol == (N - 1)) {
-			cnt++;
-			return;
-		}
-		
-		int row = 0;
-		int col = 0;
-//		현재 상태의 타입이 가로(0)일 때는 가로로 밀거나 대각선으로 밀 수 있음
-		if (type == 0) {
-			row = oRow + dRow[0];
-			col = oCol + dCol[0];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0) dfs(row, col, 0);
-			}
-			row = oRow + dRow[2];
-			col = oCol + dCol[2];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0 && map[row - 1][col] == 0 && map[row][col - 1] == 0) dfs(row, col, 2);
-			}
-		}
-//		현재 상태의 타입이 세로(1)일 때는 세로로 밀거나 대각선으로 밀 수 있음
-		else if (type == 1) {
-			row = oRow + dRow[1];
-			col = oCol + dCol[1];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0) dfs(row, col, 1);
-			}
-			row = oRow + dRow[2];
-			col = oCol + dCol[2];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0 && map[row - 1][col] == 0 && map[row][col - 1] == 0) dfs(row, col, 2);
-			}
-		}
-//		현재 상태의 타입이 대각선(2)일 때는 가로로 밀거나 세로로 밀거나 대각선으로 밀 수 있음
-		else {
-			row = oRow + dRow[0];
-			col = oCol + dCol[0];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0) dfs(row, col, 0);
-			}
-			row = oRow + dRow[1];
-			col = oCol + dCol[1];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0) dfs(row, col, 1);
-			}
-			row = oRow + dRow[2];
-			col = oCol + dCol[2];
-			if (row >= 0 && row < N && col >= 0 && col < N) {
-				if (map[row][col] == 0 && map[row - 1][col] == 0 && map[row][col - 1] == 0) dfs(row, col, 2);
-			}
-		}
-	}
-	
-	
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		map = new int[N][N];
-		String[] srr;
-		for (int i = 0; i < N; i++) {
-			srr = br.readLine().split(" ");
-			for (int j = 0; j < N; j++) {
-				map[i][j] = Integer.parseInt(srr[j]);
-			}
-		}
-//		끝점이 (0, 1)에서 (N - 1, N - 1)까지 와야 됨
-//		가로타입(0), 세로타입(1), 대각선타입(2)
-		dfs(0, 1, 0);
-		System.out.println(cnt);
-	}
+    static int N;
+    static long[][][] dp;
+    static int[][] map;
+    
+    
+//    가로, 대각선, 세로 순으로 0, 1, 2 인덱싱
+    
+    static long dfs(int row, int col, int type) {
+    	if (row == 0 || col == 1) return dp[row][col][type];
+    	if (map[row][col] == 1) return 0;
+    	
+    	if (dp[row][col][type] == -1) {
+    		dp[row][col][type] = 0;
+    		if (type == 0) {
+    			dp[row][col][type] = dfs(row, col - 1, 0) + dfs(row, col - 1, 1);
+    		}
+    		else if (type == 1) {
+    			if (map[row - 1][col] == 0 && map[row][col - 1] == 0) {
+        			dp[row][col][type] = dfs(row - 1, col - 1, 0) + dfs(row - 1, col - 1, 1) + dfs(row - 1, col - 1, 2);
+    			}
+    		}
+    		else if (type == 2) {
+    			dp[row][col][type] = dfs(row - 1, col, 1) + dfs(row - 1, col, 2);
+    		}
+    	}
+    	
+    	return dp[row][col][type];
+    }
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        dp = new long[N][N][3];
+        map = new int[N][N];
+        
+        for (int i = 0; i < N; i++) {
+        	StringTokenizer st = new StringTokenizer(br.readLine());
+        	for (int j = 0; j < N; j++) {
+        		map[i][j] = Integer.parseInt(st.nextToken());
+        	}
+        }
+        
+//      인덱스 예외 방지하기 위해 0번째 라인 초기화해놓고 DP 수행
+        for (int j = 1; j < N; j++) {
+//        	가다가 벽이 있으면 못 가는 곳이므로 0으로 초기화해야함
+        	if (map[0][j] == 1) break;
+            dp[0][j][0] = 1;
+        }
+        
+        for (int i = 1; i < N; i++) {
+        	for (int j = 2; j < N; j++) {
+        		for (int k = 0; k < 3; k++) {
+        			dp[i][j][k] = -1;
+        		}
+        	}
+        }
+        
+        System.out.println(dfs(N - 1, N - 1, 0) + dfs(N - 1, N - 1, 1) + dfs(N - 1, N - 1, 2));
+    }
 }
