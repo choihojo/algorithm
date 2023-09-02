@@ -6,7 +6,6 @@ public class Main {
     static long[][][] dp;
     static int[][] map;
     
-    
 //    가로, 대각선, 세로 순으로 0, 1, 2 인덱싱
     
     static long dfs(int row, int col, int type) {
@@ -29,6 +28,37 @@ public class Main {
     	}
     	
     	return dp[row][col][type];
+    }
+    
+    
+    static void dfs2(int row, int col, int type) {
+    	if (row == 0 || col == 1) return;
+    	if (map[row][col] == 1) {
+    		dp[row][col][type] = 0;
+    		return;
+    	}
+    	
+    	if (dp[row][col][type] == -1) {
+    		dp[row][col][type] = 0;
+    		if (type == 0) {
+    			dfs2(row, col - 1, 0);
+    			dfs2(row, col - 1, 1);
+    			dp[row][col][type] = dp[row][col - 1][0] + dp[row][col - 1][1];
+    		}
+    		else if (type == 1) {
+    			if (map[row - 1][col] == 0 && map[row][col - 1] == 0) {
+    				dfs2(row - 1, col - 1, 0);
+    				dfs2(row - 1, col - 1, 1);
+    				dfs2(row - 1, col - 1, 2);
+        			dp[row][col][type] = dp[row - 1][col - 1][0] + dp[row - 1][col - 1][1] + dp[row - 1][col - 1][2];
+    			}
+    		}
+    		else if (type == 2) {
+    			dfs2(row - 1, col, 1);
+    			dfs2(row - 1, col, 2);
+    			dp[row][col][type] = dp[row - 1][col][1] + dp[row - 1][col][2];
+    		}
+    	}
     }
     
     public static void main(String[] args) throws Exception {
@@ -59,6 +89,11 @@ public class Main {
         	}
         }
         
-        System.out.println(dfs(N - 1, N - 1, 0) + dfs(N - 1, N - 1, 1) + dfs(N - 1, N - 1, 2));
+        dfs2(N - 1, N - 1, 0);
+        dfs2(N - 1, N - 1, 1);
+        dfs2(N - 1, N - 1, 2);
+//        System.out.println(dfs(N - 1, N - 1, 0) + dfs(N - 1, N - 1, 1) + dfs(N - 1, N - 1, 2));
+        long sum = dp[N - 1][N - 1][0] + dp[N - 1][N - 1][1] + dp[N - 1][N - 1][2];
+        System.out.println(sum);
     }
 }
