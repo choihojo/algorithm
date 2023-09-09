@@ -96,9 +96,11 @@ public class Main {
 				reset();
 				visited[row][col] = true;
 				temp++;
+//              시간을 한번에 올려줌 (아기 상어가 먹이를 찾지 못하고 끝났으면 그동안 temp에 저장된 시간은 고려할 필요가 없음)
 				time += temp;
 				temp = 0;
 			}
+//          시간을 바로 올려주는 것이 아니라 임시로 저장했다가 먹이를 찾았을 경우에 한번에 올려줌
 			else temp++;
 			if (queue.isEmpty()) break;
 		}
