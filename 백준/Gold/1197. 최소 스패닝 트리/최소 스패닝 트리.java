@@ -1,18 +1,41 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-// 기본적인 MST 문제
-// 이번엔 크루스칼 알고리즘(간선 중심)이 아니라 프림 알고리즘(정점 중심)으로 풀어봄
+// 기본적인 MST를 이용하는 문제
+// union-find에 기반한 크루스칼 알고리즘 이용
 
 public class Main {
-	static int V, E;
-	static int A, B, C;
-	
-	static boolean[] visited;
-	static int[] minEdge;
-	static List<List<Vertex>> adjList;
+	static int V;
+	static int E;
+	static int[] parents;
+	static Edge[] eList;
+//	가중치의 합을 저장할 변수
 	static long sum;
+//	몇 개의 노드를 연결했는지 저장할 변수
 	static int cnt;
+	
+	static void make() {
+//		인덱싱 편하게 하기 위해서 1 크게 초기화
+		parents = new int[V + 1];
+		for (int i = 1; i < parents.length; i++) {
+			parents[i] = i;
+		}
+	}
+	
+	static int find(int e) {
+		if (parents[e] == e) return e;
+//		최적화
+//		find(e)가 아니라 find(parents[e])임을 유의할 것
+		return parents[e] = find(parents[e]);
+	}
+	
+	static boolean union(int a, int b) {
+		int rootA = find(a);
+		int rootB = find(b);
+		if (rootA == rootB) return false;
+		parents[rootB] = rootA;
+		return true;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,72 +43,46 @@ public class Main {
 		V = Integer.parseInt(srr[0]);
 		E = Integer.parseInt(srr[1]);
 		
-		adjList = new ArrayList<>();
-		for (int i = 0; i <= V; i++) {
-			adjList.add(new ArrayList<>());
-		}
+		eList = new Edge[E];
 		
-//		양방향이므로 그에 맞게 초기화
 		for (int i = 0; i < E; i++) {
 			srr = br.readLine().split(" ");
-			A = Integer.parseInt(srr[0]);
-			B = Integer.parseInt(srr[1]);
-			C = Integer.parseInt(srr[2]);
-			adjList.get(A).add(new Vertex(B, C));
-			adjList.get(B).add(new Vertex(A, C));
+			int from = Integer.parseInt(srr[0]);
+			int to = Integer.parseInt(srr[1]);
+			int weight = Integer.parseInt(srr[2]);
+			eList[i] = new Edge(from, to, weight);
 		}
 		
-//		인덱싱 편하게 1 크게 초기화
-		minEdge = new int[V + 1];
-//		minEdge 배열은 시작과 동시에 최대 정수값으로 초기화
-		Arrays.fill(minEdge, Integer.MAX_VALUE);
-		visited = new boolean[V + 1];
-//		시작점인 1의 간선 비용은 0으로 초기화
-		minEdge[1] = 0;
+//		가중치에 대해 오름차순으로 정렬
+		Arrays.sort(eList, (o1, o2) -> (o1.weight - o2.weight));
 		
-//		낮은 비용의 간선부터 뽑도록 오름차순으로 정렬
-		Queue<Vertex> pQueue = new PriorityQueue<>((o1, o2) -> (o1.weight > o2.weight ? 1 : (o1.weight == o2.weight ? 0 : -1)));
-		pQueue.add(new Vertex(1, 0));
-		Vertex poll;
-		int pNo;
-//		int pWeight;
+//		최소 단위 서로소 집합 생성
+		make();
 		
-		while (!pQueue.isEmpty()) {
-			poll = pQueue.poll();
-			pNo = poll.no;
-//			pWeight = poll.weight;
-			
-//			이거 안 해도 답은 나올텐데 그럼 시간초과 나는지 확인해보자
-//			if (visited[pNo]) continue;
-			
-			visited[pNo] = true;
-//			sum += pWeight;
-//			cnt++;
-			
-//			if (cnt == V) break;
-			
-			for (Vertex vertex : adjList.get(pNo)) {
-				if (!visited[vertex.no] && vertex.weight <= minEdge[vertex.no]) {
-					pQueue.offer(vertex);
-					minEdge[vertex.no] = vertex.weight; 
-				}
+		for (int i = 0; i < E; i++) {
+			Edge edge = eList[i];
+			int from = edge.from;
+			int to = edge.to;
+			if (union(from, to)) {
+				cnt++;
+				sum += edge.weight;
 			}
+			if (cnt == (V - 1)) break;
 		}
 		
-		for (int i = 1; i <= V; i++) {
-			sum += minEdge[i];
-		}
-		
-		System.out.println(sum);
+		if (cnt == (V - 1)) System.out.println(sum);
 	}
 }
 
-class Vertex {
-	int no;
+class Edge {
+	int from;
+	int to;
 	int weight;
-	public Vertex(int no, int weight) {
+	
+	public Edge(int from, int to, int weight) {
 		super();
-		this.no = no;
+		this.from = from;
+		this.to = to;
 		this.weight = weight;
 	}
 }
