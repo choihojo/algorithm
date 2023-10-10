@@ -20,9 +20,17 @@ public class Main {
 			for (int j = 0; j < num; j++) {
 				map.put(br.readLine(), 0);
 			}
-			A : for (Entry<String, Integer> entry : map.entrySet()) {
-				for (int k = 1; k < entry.getKey().length(); k++) {
-					if (map.containsKey(entry.getKey().substring(0, k))) {
+//			A : for (Entry<String, Integer> entry : map.entrySet()) {
+//				for (int k = 1; k < entry.getKey().length(); k++) {
+//					if (map.containsKey(entry.getKey().substring(0, k))) {
+//						flag = false;
+//						break A;
+//					}
+//				}
+//			}
+			A : for (String key : map.keySet()) {
+				for (int k = 1; k < key.length(); k++) {
+					if (map.containsKey(key.substring(0, k))) {
 						flag = false;
 						break A;
 					}
