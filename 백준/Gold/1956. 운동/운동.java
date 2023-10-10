@@ -17,9 +17,10 @@ public class Main {
 		E = Integer.parseInt(st.nextToken());
 		dp = new int[V + 1][V + 1];
 		for (int i = 1; i <= V; i++) {
-			for (int j = 1; j <= V; j++) {
-				dp[i][j] = 5_000_000; 
-			}
+//			for (int j = 1; j <= V; j++) {
+//				dp[i][j] = 5_000_000; 
+//			}
+			Arrays.fill(dp[i], 5_000_000);
 		}
 //		for (int i = 1; i <= V; i++) {
 //			dp[i][i] = 0;
