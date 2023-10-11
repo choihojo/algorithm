@@ -14,47 +14,25 @@ public class Main {
 		int idx = 0;
 		int waitTime = 0;
 		int cnt = 0;
-		for (int t = 1; t <= 200_000; t++) {
-			if (reserved[t]) {
-				if (!visited[t]) {
-					visited[t] = true;
-					waitTime = (t - arrived[t]);
-					if (max < waitTime) max = waitTime;
-					cnt++;
-				}
-				else {
-					while (visited[guests[idx][0]]) {
-						idx++;
+		for (int t = 1; t <= 300_000; t++) {
+			if (cnt == N) break;
+			if (t <= 200_000) {
+				if (reserved[t]) {
+					if (!visited[t]) {
+						visited[t] = true;
+						waitTime = (t - arrived[t]);
+						if (max < waitTime) max = waitTime;
+						cnt++;
+						continue;
 					}
-					if (t < guests[idx][1]) continue;
-					visited[guests[idx][0]] = true;
-					waitTime = (t - guests[idx][1]);
-					if (max < waitTime) max = waitTime;
-					cnt++;
 				}
 			}
-			else {
-				while (visited[guests[idx][0]]) {
-					idx++;
-				}
-				if (t < guests[idx][1]) continue;
-				visited[guests[idx][0]] = true;
-				waitTime = (t - guests[idx][1]);
-				if (max < waitTime) max = waitTime;
-				cnt++;
-			}
-			if (cnt == N) return max;
-		}
-		for (int t = 200_001; t <= 300_000; t++) {
-			while (visited[guests[idx][0]]) {
-				idx++;
-			}
+			while (visited[guests[idx][0]]) idx++;
 			if (t < guests[idx][1]) continue;
 			visited[guests[idx][0]] = true;
 			waitTime = (t - guests[idx][1]);
 			if (max < waitTime) max = waitTime;
 			cnt++;
-			if (cnt == N) return max;
 		}
 		return max;
 	}
