@@ -15,6 +15,7 @@ public class Main {
 	static List<Integer> list;
 	static int cnt;
 	static StringBuilder sb;
+	static StringBuilder result;
 	
 	public static void main(String[] args) throws Exception {
 		br = new BufferedReader(new InputStreamReader(System.in));
@@ -24,6 +25,7 @@ public class Main {
 		kSet = new HashSet<>();
 		list = new ArrayList<>();
 		st = new StringTokenizer(br.readLine());
+		result = new StringBuilder();
 		sb = new StringBuilder();
 		for (int n = 0; n < N; n++) {
 			teeth[n] = Integer.parseInt(st.nextToken());
@@ -33,6 +35,10 @@ public class Main {
 //		언뜻 생각하면 0에서 1, 0에서 2, ... 0에서 N-1까지 고려한 뒤 1에서 2, 1에서 3, 이런 식으로 이중 루프를 돌아야 된다고 생각할 수 있지만 이러면 경우가 너무 많아짐 (이래도 통과하긴 함)
 //		잘 생각해보면 어떤 이빨이 찍힌 기준점이 있을 때 반드시 그 기준점과 짝을 이루는 다른 이빨 찍힌 위치가 존재해야 함
 //		결국 이빨 간격으로 가능한 후보는 이빨이 찍힌 어떤 위치 하나를 기준으로 잡고 다른 모든 이빨이 찍힌 위치와의 거리를 넣어주면 되는 것임
+//		여기서 더 나아가면 굳이 N-1까지 조사하는 것이 아니라 N/2까지만 조사해도 된다는 것을 알 수 있음
+//		직관적으로 N/2까지만 해도 되는 이유를 설명해보자면 start-mid-end 이렇게 있다고 했을 때 start-mid보다 간격이 더 길어진 지점을 new라 했을 때 start-new와 new-end를 생각해보면 됨
+//		start-new도 mid를 포함할 수 없고 new-end도 mid를 포함할 수 없고, 이건 다른 말로 어떻게 깨물더라도 start-new 간격을 가진 아즈버는 mid에 이빨 자국을 남길 수 없다는 것을 의미함
+//		결론적으로 인덱스가 N/2보다 커지는 경우는 바로 배제해도 됨
 		for (int i = 1; i <= N / 2; i++) {
 			kSet.add(teeth[i] - teeth[0]);
 		}
@@ -40,6 +46,9 @@ public class Main {
 //		왜냐하면 이빨 자국은 하나만 찍히는 것이 아니라 반드시 짝이 있기 때문임
 //		그렇기 때문에 그 어떤 위치를 기준으로 잡든 해당 위치에서 +k한 위치 혹은 -k한 위치에 이빨 자국이 찍혀있어야 함
 		for (int k : kSet) {
+//		int half = N / 2;
+//		for (int i = 1; i <= half; i++) {
+//			int k = teeth[i] - teeth[0];
 			boolean flag = true;
 			for (int n = 0; n < N; n++) {
 				if (vSet.contains(teeth[n] - k)) continue;
@@ -51,14 +60,15 @@ public class Main {
 //			만약 flag가 true로 남아있다면 이빨 자국 후보 k를 검사를 통과한 이빨 간격을 모아두는 list에 추가하고 cnt를 증가시킴 (cnt를 굳이 안 쓰고 나중에 list.size() 써도 되긴 함)
 			if (flag) {
 				list.add(k);
+//				sb.append(k).append(" ");
 				cnt++;
 			}
 		}
 		Collections.sort(list);
-		sb.append(cnt).append("\n");
 		for (int k : list) {
 			sb.append(k).append(" ");
 		}
+		System.out.println(cnt);
 		System.out.println(sb);
 	}
 }
