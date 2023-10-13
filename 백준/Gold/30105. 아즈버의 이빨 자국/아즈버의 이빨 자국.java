@@ -6,7 +6,8 @@ public class Main {
 	static StringTokenizer st;
 	static int N;
 	static int[] teeth;
-	static boolean[] visited;
+//	static boolean[] visited;
+	static Map<Integer, Integer> map;
 	static Set<Integer> set;
 	static List<Integer> list;
 	static int cnt;
@@ -16,31 +17,33 @@ public class Main {
 		br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		teeth = new int[N];
-		visited = new boolean[1_000_000_001];
+//		visited = new boolean[1_000_000_001];
+		map = new HashMap<>();
 		set = new HashSet<>();
 		list = new ArrayList<>();
 		st = new StringTokenizer(br.readLine());
 		sb = new StringBuilder();
 		for (int n = 0; n < N; n++) {
 			teeth[n] = Integer.parseInt(st.nextToken());
-			visited[teeth[n]] = true;
+			map.put(teeth[n], 0);
+//			visited[teeth[n]] = true;
 		}
-		for (int i = 0; i < N - 1; i++) {
-			for (int j = i + 1; j < N; j++) {
-				set.add(teeth[j] - teeth[i]);
-			}
+		for (int i = 1; i < N; i++) {
+			set.add(teeth[i] - teeth[0]);
 		}
 		for (int k : set) {
 			boolean flag = true;
 			for (int n = 0; n < N; n++) {
-				int minus = teeth[n] - k;
-				if (minus >= 0) {
-					if (visited[minus]) continue; 
-				}
-				int plus = teeth[n] + k;
-				if (plus <= 1_000_000_000) {
-					if (visited[plus]) continue;
-				}
+//				int minus = teeth[n] - k;
+//				if (minus >= 0) {
+//					if (visited[minus]) continue; 
+//				}
+//				int plus = teeth[n] + k;
+//				if (plus <= 1_000_000_000) {
+//					if (visited[plus]) continue;
+//				}
+				if (map.containsKey(teeth[n] - k)) continue;
+				if (map.containsKey(teeth[n] + k)) continue;
 				flag = false;
 				break;
 			}
