@@ -1,169 +1,174 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Queue;
 import java.util.StringTokenizer;
-
+  
 public class Solution {
-	static int N,H,W,map[][],res[];
-	static int min;
-	static int C;
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
-		
-		int T = Integer.parseInt(bf.readLine());
-		
-		for(int tc = 1; tc <= T; tc++) {
-			st = new StringTokenizer(bf.readLine());
-			min = Integer.MAX_VALUE;
-			
-			N = Integer.parseInt(st.nextToken());
-			W = Integer.parseInt(st.nextToken());
-			H = Integer.parseInt(st.nextToken());
-			
-			map = new int[H][W];
-			res = new int[N];
-			
-			for(int i = 0; i < H; i++) {
-				st = new StringTokenizer(bf.readLine());
-				for(int j = 0; j < W; j++) {
-					map[i][j] = Integer.parseInt(st.nextToken());
-				}
-			}
-			
-			per(0);
-//			System.out.println("#" + tc + " " + min);
-			sb.append("#").append(tc).append(" ").append(min).append("\n");
-		}
-		System.out.println(sb);
-	}
-	
-	private static void per(int cnt) { //공을 어느 위치에 떨어트릴지 중복 순열 생성
-		if(cnt == N) {
-//			System.out.println(Arrays.toString(res));
-//			if(res[0] == 2 && res[1] == 2 && res[2] == 6) {
-				toDo(); //완성된 순열을 바탕으로 시뮬레이션				
-//			}
-			if(C < min) { //시뮬레이션 결과값 저장
-				min = C;
-			}
-			return;
-		}
-		
-		for(int i = 0; i < W; i++) {
-			res[cnt] = i;
-			per(cnt + 1);
-		}
-	}
-	
-	static int tmpmap[][];
-	private static void toDo() { //공을 떨어트리게 된다. N개의 공을 떨어트리므로 N번 반복을 돌릴까
-		//시뮬레이션에  사용될 임시 맵 생성
-		tmpmap = new int[H][W];
-		for(int i = 0; i < H; i++) {
-			tmpmap[i] = Arrays.copyOf(map[i], W);
-			
-		}
-		//떨어진 공에 의해서 깨지는 벽돌 찾기
-		for(int i = 0; i < N; i++) {
-			int x = 0;
-			int y = res[i];
-			
-			while(x < H) {
-				if(tmpmap[x][y] != 0) {
-					break;
-				}else {
-					x++;
-				}
-			}
-			
-			if(x == H) {
-				continue;
-			}
-			//깨지는 벽돌의 연쇄작용 찾기
-			findnext(x,  y, tmpmap);
-			
-			//깨진 후 모습
-			afterBreak(tmpmap);
-		}
-//		for(int i = 0; i < H; i++) {
-//			System.out.println(Arrays.toString(tmpmap[i]));
-//		}
-//		System.out.println();
-		C = 0;
-		for(int i = 0; i < H; i++) {
-			for(int j = 0 ; j < W; j++) {
-				if(tmpmap[i][j] != 0) {
-					C++;
-				}
-			}
-		}
-//		System.out.println(C);
-	}
-
-	private static void afterBreak(int[][] tmpmap) {
-		ArrayList<Integer> list;
-		for(int i = 0; i < W; i++) {
-			list = new ArrayList<>();
-			for(int j = H - 1; j >= 0; j--) {
-				if(tmpmap[j][i] != 0) {
-					list.add(tmpmap[j][i]);
-					tmpmap[j][i] = 0;
-				}
-			}
-			int size = list.size();
-			for(int j = H - 1; j >= H - size; j--) {
-				tmpmap[j][i] = list.remove(0);
-			}
-		}
-	}
-
-	private static void findnext(int x, int y, int[][] tmpmap) {
-		Queue<int[]> q = new ArrayDeque<int[]>();
-		q.offer(new int[] {x, y});
-		
-		while(!q.isEmpty()) {
-			int temp[] = q.poll();
-			int cx = temp[0];
-			int cy = temp[1];
-//			System.out.println(cx + " " + cy);
-			int size = tmpmap[cx][cy];
-			tmpmap[cx][cy] = 0;
-			if(size == 1) {
-				continue;
-			}
-			int udx = cx - 1;
-			int rdy = cy + 1;
-			int ldy = cy - 1;
-			int ddx = cx + 1;				
-			while(size > 1) {
-				if(udx >= 0 && tmpmap[udx][cy] != 0) {
-					q.offer(new int[] {udx, cy});
-				}
-				if(rdy < W && tmpmap[cx][rdy] != 0) {
-					q.offer(new int[] {cx, rdy});
-				}
-				if(ddx < H && tmpmap[ddx][cy] != 0) {
-					q.offer(new int[] {ddx, cy});
-				}
-				if(ldy >= 0 && tmpmap[cx][ldy] != 0) {
-					q.offer(new int[] {cx, ldy});
-				}
-				udx = udx - 1;
-				rdy = rdy + 1;
-				ldy = ldy - 1;
-				ddx = ddx + 1;				
-				size--;
-			}
-		}
-//		for(int i = 0; i < H; i++) {
-//			System.out.println(Arrays.toString(tmpmap[i]));
-//		}
-//		System.out.println();
-	}
+    static BufferedReader br;
+    static StringTokenizer st;
+    static StringBuilder sb;
+    static int T;
+    static int N, W, H;
+//    전체 벽돌 배열
+    static int[][] map;
+    static int[][] originalMap;
+//    인덱싱 위한 배열
+    static int[] index;
+//    인덱싱 순서 뽑은 배열
+    static int[] sequence;
+    static int[] dRow = new int[] {0, -1, 0, 1};
+    static int[] dCol = new int[] {1, 0, -1, 0};
+    static boolean[][] breakMap;
+    static int min;
+      
+    static void doublePermutation(int count) {
+        if (count == N) {
+//          System.out.println(Arrays.toString(sequence));
+            resetMap();
+            for (int i = 0; i < N; i++) {
+                int oRow = findPosition(sequence[i]);
+                int oCol = sequence[i];
+//                System.out.println("oRow : " + oRow);
+//                System.out.println("oCol : " + oCol);
+                if (oRow == H) break;
+                
+                    resetBreakMap();
+                    shoot(oRow, oCol);
+                    update();
+//                    for (int[] irr : map) {
+//                        System.out.println(Arrays.toString(irr));
+//                    }
+            }
+//            System.out.println(Arrays.toString(sequence));
+            int temp = count();
+//            System.out.println("count : " + temp);
+            if (min > temp) min = temp;
+              
+//            System.out.println("==================================");
+            return;
+        }
+          
+        for (int i = 0; i < index.length; i++) {
+            sequence[count] = index[i];
+            doublePermutation(count + 1);
+        }
+    }
+      
+    static void shoot(int oRow, int oCol) {
+        int power = map[oRow][oCol];
+        int row = 0;
+        int col = 0;
+        breakMap[oRow][oCol] = true;
+        for (int i = 0; i < 4; i++) {
+            for (int p = 1; p < power; p++) {
+                row = oRow + p * dRow[i];
+                col = oCol + p * dCol[i];
+                if (row >= 0 && row < H && col >= 0 && col < W) {
+                    if (map[row][col] > 0) {
+                        if (!breakMap[row][col]) {
+//                            System.out.println("row : " + row);
+//                            System.out.println("col : " + col);
+                            shoot(row, col);
+                        }
+                    }
+                    else continue;
+                }
+            }
+        }
+    }
+      
+    static void update() {
+        int[] irr = new int[H];
+        for (int w = 0; w < W; w++) {
+            int count = 0;
+            Arrays.fill(irr, 0);
+            for (int h = H - 1; h >= 0; h--) {
+                if (!breakMap[h][w]) {
+                    irr[count] = map[h][w];
+                    count++;
+                }
+            }
+            int index = 0;
+            for (int h = H - 1; h >= 0; h--) {
+                map[h][w] = irr[index];
+                index++;
+            }
+        }
+    }
+      
+    static int count() {
+        int count = 0;
+        for (int h = 0; h < H; h++) {
+            for (int w = 0; w < W; w++) {
+                if (map[h][w] > 0) count++;
+            }
+        }
+        return count;
+    }
+      
+    static int findPosition(int oCol) {
+        int oRow = 0;
+        while (oRow < H) {
+            if (map[oRow][oCol] > 0) {
+                break;
+            }
+            oRow++;
+        }
+        return oRow;
+    }
+      
+    static void resetMap() {
+        for (int h = 0; h < H; h++) {
+            for (int w = 0; w < W; w++) {
+                map[h][w] = originalMap[h][w];
+            }
+        }
+    }
+      
+    static void resetBreakMap() {
+        for (int h = 0; h < H; h++) {
+            for (int w = 0; w < W; w++) {
+                breakMap[h][w] = false;
+            }
+        }
+    }
+      
+    public static void main(String[] args) throws Exception {
+        br = new BufferedReader(new InputStreamReader(System.in));
+        T = Integer.parseInt(br.readLine());
+        sb = new StringBuilder();
+        for (int t = 1; t <= T; t++) {
+            min = Integer.MAX_VALUE;
+              
+            st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken());
+            W = Integer.parseInt(st.nextToken());
+            H = Integer.parseInt(st.nextToken());
+              
+            map = new int[H][W];
+            originalMap = new int[H][W];
+            breakMap = new boolean[H][W];
+            for (int h = 0; h < H; h++) {
+                st = new StringTokenizer(br.readLine());
+                for (int w = 0; w < W; w++) {
+                    originalMap[h][w] = Integer.parseInt(st.nextToken());
+                }
+            }
+              
+//            for (int[] irr : map) {
+//                System.out.println(Arrays.toString(irr));
+//            }
+              
+            index = new int[W];
+            for (int w = 0; w < W; w++) {
+                index[w] = w;
+            }
+              
+            sequence = new int[N];
+            doublePermutation(0);
+            sb.append("#").append(t).append(" ").append(min).append("\n");
+        }
+        System.out.println(sb);
+ 
+    }
 }
