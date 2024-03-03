@@ -1,43 +1,50 @@
 import java.io.*;
+import java.util.*;
 
 public class Main {
+	static BufferedReader br;
+	static int[] input;
+	static boolean[] visited;
 	static int sum;
-	static int[] irr;
-	static int diff;
-	static int[] remain;
+	static int goal;
+	static StringBuilder sb;
 	
-	public static void combination(int cnt, int start) {
+	static void dfs(int cnt, int start, int current) {
 		if (cnt == 2) {
-//			9명 중에 2명을 고르고 2명의 합이 diff와 같을 때 나머지 7명을 출력함
-			if ((remain[0] + remain[1]) == diff) {
-				for (int i : irr) {
-//					9명 중 2명을 제외한 7명을 출력함
-					if (i != remain[0] && i != remain[1]) {
-						System.out.println(i);
+			if (current == goal) {
+				for (int i = 0; i < 9; i++) {
+					if (!visited[i]) {
+						sb.append(input[i]).append("\n");
 					}
 				}
 			}
 			return;
 		}
+		
 		for (int i = start; i < 9; i++) {
-			remain[cnt] = irr[i];
-			combination(cnt + 1, i + 1);
+			visited[i] = true;
+			dfs(cnt + 1, i + 1, current + input[i]);
+			visited[i] = false;
 		}
 	}
 	
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		irr = new int[9];
+		br = new BufferedReader(new InputStreamReader(System.in));
+		input = new int[9];
+		visited = new boolean[9];
 		for (int i = 0; i < 9; i++) {
-			irr[i] = Integer.parseInt(br.readLine());
-			sum += irr[i];
+			input[i] = Integer.parseInt(br.readLine());
+			sum += input[i];
 		}
+		Arrays.sort(input);
+		sb = new StringBuilder();
 		
-//		9명 중 7난쟁이가 아닌 나머지 2명의 합을 구함
-		diff = sum - 100;
-		remain = new int[2];
+		goal = sum - 100;
+		/*
+		 * 2명 더해서 goal인 경우를 찾아야 함
+		 */
+		dfs(0, 0, 0);
 		
-		combination(0, 0);
-		
+		System.out.println(sb.deleteCharAt(sb.length() - 1));
 	}
 }
