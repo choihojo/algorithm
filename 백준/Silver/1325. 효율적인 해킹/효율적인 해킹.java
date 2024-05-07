@@ -12,6 +12,10 @@ public class Main {
 	static void bfs(int i, int temp) {
 		Queue<Integer> queue = new ArrayDeque<>();
 		
+		for (int k = 1; k < temp; k++) {
+			visited[k] = false;
+		}
+		
 		queue.offer(i);
 		visited[i] = true;
 		int poll = 0;
@@ -51,7 +55,6 @@ public class Main {
 		}
 		
 		for (int i = 1; i < temp; i++) {
-			visited = new boolean[N + 1];
 			bfs(i, temp);			
 		}
 		
